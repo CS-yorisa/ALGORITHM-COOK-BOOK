@@ -12,18 +12,17 @@ class SegmentTree:
         tree_size = 1 << (h + 1)
         self.tree = [0] * tree_size
         self.node_index = [0] * (N + 1)  # 수열의 노드 인덱스 저장
-        self.find_node_index(1, 1, N)
-    
-    def find_node_index(self, node: int, start: int, end: int) -> None:
+        self.node_init(1, 1, N)
+
+    def node_init(self, node: int, start: int, end: int) -> int:
         if start == end:
             self.node_index[start] = node
             self.tree[node] = self.array[start]
-            self.update(node // 2)
-        else:
-            mid = (start + end) // 2
-            self.find_node_index(node * 2, start, mid)
-            self.find_node_index(node * 2 + 1, mid + 1, end)
-    
+            return self.tree[node]
+        mid = (start + end) // 2
+        self.tree[node] = self.node_init(node * 2, start, mid) + self.node_init(node * 2 + 1, mid + 1, end)
+        return self.tree[node]
+
     def query(self, node: int, start: int, end: int, left: int, right: int) -> int:
         if left > end or right < start:
             return 0
